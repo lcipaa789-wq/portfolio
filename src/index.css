@@ -1,12 +1,117 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 @import "tailwindcss";
+
+:root {
+  --bg: oklch(0.08 0 0);
+  --surface: oklch(0.13 0.008 165);
+  --surface-2: oklch(0.18 0.01 165);
+  --ink: oklch(0.94 0.008 165);
+  --primary: oklch(0.62 0.19 158);
+  --accent: oklch(0.88 0.14 55);
+  --muted: oklch(0.52 0.01 165);
+  --border: oklch(0.22 0.008 165);
+  --border-primary: oklch(0.62 0.19 158 / 0.32);
+}
 
 html {
   scroll-behavior: smooth;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, sans-serif;
+  background-color: var(--bg);
+  color: var(--ink);
+  font-family: "Manrope", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.65;
+}
+
+::placeholder {
+  color: var(--muted);
+  opacity: 0.65;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--primary) !important;
+  outline: none;
+}
+
+/* Dot grid background */
+.dot-grid {
+  background-image: radial-gradient(
+    circle,
+    oklch(0.26 0.008 165 / 0.5) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+}
+
+/* ── Hero entrance animations ────────────────────────── */
+
+@keyframes slideUp {
+  from {
+    transform: translateY(108%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.95s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.9s ease-out both;
+  opacity: 0;
+}
+
+/* ── Scroll reveal ───────────────────────────────────── */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Reduced motion ──────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-slideUp,
+  .animate-fadeIn {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .reveal,
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

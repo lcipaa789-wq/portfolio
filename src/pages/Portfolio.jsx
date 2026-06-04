@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Menu,
   X,
@@ -6,33 +6,70 @@ import {
   Send,
   Mail,
   MapPin,
-  ArrowRight,
   ExternalLink,
+  ArrowUpRight,
 } from "lucide-react";
 import { Github, Linkedin } from "react-bootstrap-icons";
 import { FaHtml5, FaCss3Alt, FaReact, FaGitAlt } from "react-icons/fa";
-import { SiJavascript, SiTailwindcss, SiRedux } from "react-icons/si";
+import {
+  SiJavascript,
+  SiTailwindcss,
+  SiRedux,
+  SiNodedotjs,
+  SiExpress,
+  SiMongodb,
+  SiVercel,
+} from "react-icons/si";
 import emailjs from "@emailjs/browser";
 import me from "../images/me.jpeg";
 import anime from "../images/anime.png";
 import miniShop from "../images/miniShop.png";
 import playHop from "../images/playHop.png";
+import biteRush from "../images/biteRush.png";
 
-const skills = [
-  { Icon: FaHtml5, name: "HTML5", color: "text-orange-500" },
-  { Icon: FaCss3Alt, name: "CSS3", color: "text-blue-500" },
-  { Icon: SiJavascript, name: "JavaScript", color: "text-yellow-500" },
-  { Icon: FaReact, name: "React", color: "text-cyan-500" },
-  { Icon: SiTailwindcss, name: "Tailwind", color: "text-teal-500" },
-  { Icon: SiRedux, name: "Redux", color: "text-purple-500" },
-  { Icon: FaGitAlt, name: "Git", color: "text-orange-600" },
-  { Icon: Github, name: "GitHub", color: "text-slate-800" },
+const stackGroups = [
+  {
+    label: "Frontend",
+    items: [
+      { Icon: FaHtml5,      name: "HTML5" },
+      { Icon: FaCss3Alt,    name: "CSS3" },
+      { Icon: SiJavascript, name: "JavaScript" },
+      { Icon: FaReact,      name: "React" },
+      { Icon: SiTailwindcss, name: "Tailwind CSS" },
+      { Icon: SiRedux,      name: "Redux" },
+    ],
+  },
+  {
+    label: "Backend",
+    items: [
+      { Icon: SiNodedotjs,  name: "Node.js" },
+      { Icon: SiExpress,    name: "Express.js" },
+      { Icon: SiMongodb,    name: "MongoDB" },
+    ],
+  },
+  {
+    label: "Tooling",
+    items: [
+      { Icon: FaGitAlt, name: "Git" },
+      { Icon: Github,   name: "GitHub" },
+      { Icon: SiVercel, name: "Vercel" },
+    ],
+  },
 ];
 
 const projects = [
   {
+    title: "BiteRush",
+    desc: "Full-stack food delivery app with cart, orders, Stripe payments, JWT auth, and an AI food assistant powered by Claude.",
+    image: biteRush,
+    link: "https://food-delivery-sooty-two-55.vercel.app/",
+    github: "https://github.com/lcipaa789-wq/food-delivery.git",
+    tags: ["React", "Node.js", "MongoDB", "Stripe"],
+    featured: true,
+  },
+  {
     title: "Playhop",
-    desc: "Game platform built with React, Redux, RAWG API and Tailwind CSS",
+    desc: "Game platform built with React, Redux, RAWG API and Tailwind CSS.",
     image: playHop,
     link: "https://steam-clone-green.vercel.app/",
     github: "https://github.com/lcipaa789-wq/steam-clone.git",
@@ -48,7 +85,7 @@ const projects = [
   },
   {
     title: "Anime",
-    desc: "Anime platform with trending anime, search, and details pages.",
+    desc: "Anime platform with trending titles, search, and details pages.",
     image: anime,
     link: "https://vite-project-six-rho.vercel.app/",
     github: "https://github.com/lcipaa789-wq/vite-project.git",
@@ -58,9 +95,59 @@ const projects = [
 
 const navLinks = ["about", "skills", "projects", "contact"];
 
+function useScrollReveal() {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("visible");
+            observer.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+}
+
+function CornerMarks() {
+  const corners = [
+    { top: 10, left: 10,   borderTop: "1px solid var(--primary)", borderLeft:  "1px solid var(--primary)" },
+    { top: 10, right: 10,  borderTop: "1px solid var(--primary)", borderRight: "1px solid var(--primary)" },
+    { bottom: 10, left: 10,  borderBottom: "1px solid var(--primary)", borderLeft:  "1px solid var(--primary)" },
+    { bottom: 10, right: 10, borderBottom: "1px solid var(--primary)", borderRight: "1px solid var(--primary)" },
+  ];
+  return (
+    <>
+      {corners.map((style, i) => (
+        <div key={i} className="absolute w-3.5 h-3.5 pointer-events-none" style={style} />
+      ))}
+    </>
+  );
+}
+
+const MonoLabel = ({ children, style }) => (
+  <span
+    style={{
+      fontFamily: "'JetBrains Mono', monospace",
+      fontSize: "0.65rem",
+      letterSpacing: "0.22em",
+      textTransform: "uppercase",
+      color: "var(--accent)",
+      ...style,
+    }}
+  >
+    {children}
+  </span>
+);
+
 export default function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false);
   const formRef = useRef();
+  useScrollReveal();
 
   const sendEmail = (e) => {
     e.preventDefault();
@@ -69,235 +156,564 @@ export default function Portfolio() {
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         formRef.current,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       )
       .then(
-        () => {
-          alert("Message sent!");
-          formRef.current.reset();
-        },
-        () => {
-          alert("Failed to send message");
-        },
+        () => { alert("Message sent!"); formRef.current.reset(); },
+        () => { alert("Failed to send message."); }
       );
   };
 
+  const inputStyle = {
+    background: "var(--surface)",
+    border: "1px solid var(--border)",
+    borderRadius: 8,
+    color: "var(--ink)",
+    fontSize: "0.9rem",
+    fontFamily: "'Manrope', sans-serif",
+    width: "100%",
+    padding: "14px 16px",
+    outline: "none",
+    display: "block",
+  };
+
   return (
-    <div className="font-sans text-slate-900 bg-white">
-      {/* ── NAVIGATION ── */}
-      <header className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-          <a href="#about" className="text-xl font-black tracking-tight">
-            TL<span className="text-blue-600">.</span>
-          </a>
+    <div
+      className="dot-grid"
+      style={{ backgroundColor: "var(--bg)", color: "var(--ink)", minHeight: "100vh" }}
+    >
+      {/* Ambient hero glow */}
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse 55% 50% at 35% 40%, oklch(0.62 0.19 158 / 0.06) 0%, transparent 65%)",
+          zIndex: 0,
+        }}
+      />
 
-          <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link}
-                href={`#${link}`}
-                className="capitalize text-slate-500 hover:text-blue-600 font-medium transition-colors text-sm"
-              >
-                {link}
-              </a>
-            ))}
+      {/* ── NAVIGATION ────────────────────────────────── */}
+      <header
+        className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 md:px-14 h-16"
+        style={{
+          borderBottom: "1px solid var(--border)",
+          backgroundColor: "oklch(0.08 0 0 / 0.92)",
+          backdropFilter: "blur(14px)",
+        }}
+      >
+        <a
+          href="#about"
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: "0.72rem",
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+            color: "var(--muted)",
+            textDecoration: "none",
+          }}
+        >
+          tsydyp.lundukov
+        </a>
+
+        {/* Desktop nav */}
+        <nav className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
             <a
-              href="/Tsydyp_Lundukov_Resume.pdf"
-              download
-              className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors"
+              key={link}
+              href={`#${link}`}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: "0.65rem",
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "var(--muted)",
+                textDecoration: "none",
+              }}
+              className="transition-colors duration-200 hover:text-white"
             >
-              Resume <Download size={14} />
+              {link}
             </a>
-          </nav>
-
-          <button
-            className="md:hidden p-2 -mr-2 text-slate-600"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Toggle menu"
+          ))}
+          <a
+            href="/Tsydyp_Lundukov_Resume.pdf"
+            download
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-semibold transition-transform duration-150 hover:scale-[1.03]"
+            style={{
+              background: "var(--primary)",
+              color: "oklch(1 0 0)",
+              fontSize: "0.78rem",
+              fontFamily: "'Manrope', sans-serif",
+              textDecoration: "none",
+            }}
           >
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
+            Resume
+            <Download size={13} />
+          </a>
+        </nav>
 
-        {menuOpen && (
-          <div className="md:hidden bg-white border-t border-slate-100 px-6 py-4 flex flex-col gap-1">
-            {navLinks.map((link) => (
-              <a
-                key={link}
-                href={`#${link}`}
-                className="capitalize text-slate-700 font-medium py-3 border-b border-slate-50 last:border-0"
-                onClick={() => setMenuOpen(false)}
-              >
-                {link}
-              </a>
-            ))}
-            <a
-              href="/Tsydyp_Lundukov_Resume.pdf"
-              download
-              className="mt-3 flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-3 rounded-xl font-semibold"
-            >
-              Download Resume <Download size={16} />
-            </a>
-          </div>
-        )}
+        {/* Mobile hamburger */}
+        <button
+          className="md:hidden p-1.5 -mr-1"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label="Toggle menu"
+          style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)" }}
+        >
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
       </header>
 
-      {/* ── HERO / ABOUT ── */}
-      <section id="about" className="min-h-screen flex items-center pt-16">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full grid md:grid-cols-2 gap-12 md:gap-8 items-center py-20">
-          {/* Photo — appears first on mobile */}
-          <div className="flex justify-center order-first md:order-last">
-            <div className="relative">
-              <div className="absolute -inset-3 bg-blue-100 rounded-[2rem] rotate-6 -z-10" />
-              <div className="absolute -inset-3 bg-slate-100 rounded-[2rem] -rotate-3 -z-10" />
-              <img
-                src={me}
-                alt="Tsydyp Lundukov"
-                className="w-56 h-72 sm:w-72 sm:h-96 object-cover object-top rounded-3xl shadow-2xl"
-              />
+      {/* Mobile menu drawer */}
+      {menuOpen && (
+        <div
+          className="fixed inset-x-0 top-16 z-40 flex flex-col px-6 py-5 gap-1 md:hidden"
+          style={{
+            backgroundColor: "oklch(0.10 0.006 165 / 0.97)",
+            borderBottom: "1px solid var(--border)",
+            backdropFilter: "blur(14px)",
+          }}
+        >
+          {navLinks.map((link) => (
+            <a
+              key={link}
+              href={`#${link}`}
+              className="capitalize py-3.5 transition-colors duration-150 hover:text-white"
+              style={{
+                color: "var(--muted)",
+                borderBottom: "1px solid var(--border)",
+                fontFamily: "'Manrope', sans-serif",
+                fontWeight: 600,
+                fontSize: "0.95rem",
+                textDecoration: "none",
+              }}
+              onClick={() => setMenuOpen(false)}
+            >
+              {link}
+            </a>
+          ))}
+          <a
+            href="/Tsydyp_Lundukov_Resume.pdf"
+            download
+            className="mt-4 flex items-center justify-center gap-2 py-3.5 rounded-lg font-semibold"
+            style={{
+              background: "var(--primary)",
+              color: "oklch(1 0 0)",
+              fontFamily: "'Manrope', sans-serif",
+              textDecoration: "none",
+            }}
+          >
+            Download Resume
+            <Download size={16} />
+          </a>
+        </div>
+      )}
+
+      {/* ── HERO / ABOUT ─────────────────────────────── */}
+      <section
+        id="about"
+        className="relative z-10 flex items-center min-h-screen pt-16 px-6 md:px-14 py-20 md:py-0"
+      >
+        <div className="w-full max-w-5xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-14 md:gap-8">
+
+          {/* Left: typography */}
+          <div className="flex-1">
+            {/* Role */}
+            <div className="animate-fadeIn mb-7" style={{ animationDelay: "0.05s" }}>
+              <MonoLabel>[ Frontend Developer ]</MonoLabel>
             </div>
-          </div>
 
-          {/* Text */}
-          <div>
-            <span className="inline-flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
-              <span className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
-              Available for work
-            </span>
-
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight">
-              Tsydyp
-              <br />
-              <span className="text-blue-600">Lundukov</span>
+            {/* Name */}
+            <h1 style={{ margin: 0, lineHeight: 0.88, letterSpacing: "-0.025em" }}>
+              <div style={{ overflow: "hidden" }}>
+                <div
+                  className="animate-slideUp"
+                  style={{
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "clamp(3.5rem, 10vw, 7.5rem)",
+                    color: "var(--ink)",
+                    animationDelay: "0.12s",
+                  }}
+                >
+                  TSYDYP
+                </div>
+              </div>
+              <div style={{ overflow: "hidden" }}>
+                <div
+                  className="animate-slideUp"
+                  style={{
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "clamp(3.5rem, 10vw, 7.5rem)",
+                    color: "var(--primary)",
+                    animationDelay: "0.25s",
+                  }}
+                >
+                  LUNDUKOV
+                </div>
+              </div>
             </h1>
 
-            <p className="text-lg sm:text-xl text-slate-500 font-medium mt-3">
-              Frontend Developer
+            {/* Stack hint */}
+            <div
+              className="animate-fadeIn flex items-center gap-4 mt-7 mb-7"
+              style={{ animationDelay: "0.52s" }}
+            >
+              <div style={{ width: 40, height: 1, background: "var(--primary)", flexShrink: 0 }} />
+              <span
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  fontSize: "0.6rem",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "var(--muted)",
+                }}
+              >
+                React · Tailwind · Redux
+              </span>
+            </div>
+
+            {/* Bio */}
+            <p
+              className="animate-fadeIn"
+              style={{
+                animationDelay: "0.62s",
+                color: "var(--muted)",
+                fontSize: "1rem",
+                lineHeight: 1.85,
+                maxWidth: "40ch",
+                margin: 0,
+              }}
+            >
+              Building fast, precise React applications. Focused on clean UI,
+              maintainable code, and real-world delivery.
             </p>
 
-            <p className="text-slate-600 text-base sm:text-lg leading-8 mt-6 max-w-lg">
-              I build modern and responsive web applications using React,
-              Tailwind CSS, JavaScript, and Redux. Focused on clean UI, smooth
-              UX, and maintainable code.
-            </p>
-
-            <div className="flex gap-3 mt-8 flex-wrap">
+            {/* CTAs */}
+            <div
+              className="animate-fadeIn flex flex-wrap gap-3 mt-10"
+              style={{ animationDelay: "0.78s" }}
+            >
               <a
                 href="#projects"
-                className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                className="flex items-center gap-2 px-6 py-3.5 rounded-lg font-semibold transition-transform duration-150 hover:scale-[1.03]"
+                style={{
+                  background: "var(--primary)",
+                  color: "oklch(1 0 0)",
+                  fontSize: "0.875rem",
+                  fontFamily: "'Manrope', sans-serif",
+                  textDecoration: "none",
+                }}
               >
-                View Projects <ArrowRight size={18} />
+                View Projects
+                <ArrowUpRight size={16} />
               </a>
               <a
                 href="#contact"
-                className="flex items-center gap-2 border-2 border-slate-200 text-slate-700 px-6 py-3 rounded-xl font-semibold hover:border-blue-600 hover:text-blue-600 transition-colors"
+                className="flex items-center gap-2 px-6 py-3.5 rounded-lg font-semibold transition-transform duration-150 hover:scale-[1.03]"
+                style={{
+                  border: "1px solid var(--border)",
+                  color: "var(--ink)",
+                  fontSize: "0.875rem",
+                  fontFamily: "'Manrope', sans-serif",
+                  textDecoration: "none",
+                }}
               >
                 Contact me
               </a>
             </div>
 
-            <div className="flex gap-5 mt-10">
+            {/* Social */}
+            <div className="animate-fadeIn flex items-center gap-5 mt-10" style={{ animationDelay: "0.9s" }}>
               <a
                 href="https://github.com/lcipaa789-wq"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-400 hover:text-blue-600 transition-colors"
+                style={{ color: "var(--muted)" }}
+                className="transition-colors duration-200 hover:text-white"
               >
-                <Github size={24} />
+                <Github size={20} />
               </a>
               <a
                 href="https://www.linkedin.com/in/tsydyp-lundukov-a5507a3b5/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-slate-400 hover:text-blue-600 transition-colors"
+                style={{ color: "var(--muted)" }}
+                className="transition-colors duration-200 hover:text-white"
               >
-                <Linkedin size={24} />
+                <Linkedin size={20} />
               </a>
+            </div>
+          </div>
+
+          {/* Right: photo */}
+          <div className="flex-shrink-0 self-center md:self-auto">
+            <div
+              className="animate-fadeIn relative overflow-hidden"
+              style={{
+                animationDelay: "0.18s",
+                width: "clamp(164px, 24vw, 300px)",
+                aspectRatio: "3 / 4",
+                border: "1px solid var(--border-primary)",
+              }}
+            >
+              <img
+                src={me}
+                alt="Tsydyp Lundukov, Frontend Developer"
+                className="w-full h-full object-cover"
+                style={{ objectPosition: "85% top" }}
+              />
+              <div
+                className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none"
+                style={{ background: "linear-gradient(to top, var(--bg) 0%, transparent 100%)" }}
+              />
+              <CornerMarks />
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── SKILLS ── */}
-      <section id="skills" className="py-20 bg-slate-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <span className="text-blue-600 text-sm font-semibold uppercase tracking-widest">
-              My toolkit
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black mt-2">Tech Stack</h2>
+      {/* ── SKILLS ───────────────────────────────────── */}
+      <section
+        id="skills"
+        className="relative z-10 px-6 md:px-14 py-20 md:py-28"
+        style={{ borderTop: "1px solid var(--border)" }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="reveal mb-14">
+            <h2
+              style={{
+                fontFamily: "'Barlow Condensed', sans-serif",
+                fontWeight: 800,
+                fontSize: "clamp(2.2rem, 5vw, 3.8rem)",
+                lineHeight: 0.92,
+                letterSpacing: "-0.025em",
+                color: "var(--ink)",
+                margin: 0,
+              }}
+            >
+              Tech Stack
+            </h2>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-4">
-            {skills.map(({ Icon, name, color }) => (
+          <div className="grid md:grid-cols-3 gap-8">
+            {stackGroups.map((group, gi) => (
               <div
-                key={name}
-                className="flex flex-col items-center gap-3 bg-white px-6 py-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all w-28"
+                key={group.label}
+                className="reveal"
+                style={{ transitionDelay: `${gi * 0.09}s` }}
               >
-                <Icon className={`text-4xl ${color}`} />
-                <span className="text-slate-600 text-sm font-medium">{name}</span>
+                <div style={{ marginBottom: 16 }}>
+                  <MonoLabel>{group.label}</MonoLabel>
+                </div>
+                <div className="flex flex-col gap-2.5">
+                  {group.items.map(({ Icon, name }) => (
+                    <div
+                      key={name}
+                      className="flex items-center gap-3"
+                      style={{
+                        padding: "10px 14px",
+                        background: "var(--surface)",
+                        border: "1px solid var(--border)",
+                        borderRadius: 6,
+                      }}
+                    >
+                      <Icon size={17} style={{ color: "var(--primary)", flexShrink: 0 }} />
+                      <span style={{ fontSize: "0.875rem", color: "var(--ink)", fontWeight: 500 }}>
+                        {name}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── PROJECTS ── */}
-      <section id="projects" className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <span className="text-blue-600 text-sm font-semibold uppercase tracking-widest">
-              What I've built
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black mt-2">
-              Featured Projects
+      {/* ── PROJECTS ─────────────────────────────────── */}
+      <section
+        id="projects"
+        className="relative z-10 px-6 md:px-14 py-20 md:py-28"
+        style={{ borderTop: "1px solid var(--border)" }}
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="reveal mb-14">
+            <h2
+              style={{
+                fontFamily: "'Barlow Condensed', sans-serif",
+                fontWeight: 800,
+                fontSize: "clamp(2.2rem, 5vw, 3.8rem)",
+                lineHeight: 0.92,
+                letterSpacing: "-0.025em",
+                color: "var(--ink)",
+                margin: 0,
+              }}
+            >
+              Projects
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {projects.map((project) => (
+          {/* Featured */}
+          <div
+            className="reveal mb-5"
+            style={{
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
+              borderRadius: 8,
+              overflow: "hidden",
+              transitionDelay: "0.08s",
+            }}
+          >
+            <div className="grid md:grid-cols-2">
+              <div className="relative h-64 md:h-full min-h-55 overflow-hidden">
+                <img
+                  src={projects[0].image}
+                  alt={projects[0].title}
+                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                />
+              </div>
+              <div className="p-8 md:p-10 flex flex-col justify-center">
+                <MonoLabel>Featured</MonoLabel>
+                <h3
+                  style={{
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "2rem",
+                    color: "var(--ink)",
+                    margin: "8px 0 10px",
+                    letterSpacing: "-0.02em",
+                  }}
+                >
+                  {projects[0].title}
+                </h3>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {projects[0].tags.map((tag) => (
+                    <span
+                      key={tag}
+                      style={{
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: "0.6rem",
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                        color: "var(--muted)",
+                        background: "var(--surface-2)",
+                        border: "1px solid var(--border)",
+                        padding: "3px 8px",
+                        borderRadius: 4,
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <p
+                  style={{
+                    color: "var(--muted)",
+                    fontSize: "0.875rem",
+                    lineHeight: 1.75,
+                    marginBottom: 22,
+                  }}
+                >
+                  {projects[0].desc}
+                </p>
+                <div className="flex gap-3 flex-wrap">
+                  <a
+                    href={projects[0].link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg font-semibold transition-transform duration-150 hover:scale-[1.03]"
+                    style={{ background: "var(--primary)", color: "oklch(1 0 0)", fontSize: "0.78rem", textDecoration: "none" }}
+                  >
+                    View Project <ExternalLink size={12} />
+                  </a>
+                  <a
+                    href={projects[0].github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg font-semibold transition-colors duration-150"
+                    style={{ border: "1px solid var(--border)", color: "var(--muted)", fontSize: "0.78rem", textDecoration: "none" }}
+                  >
+                    GitHub <Github size={12} />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Secondary */}
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {projects.slice(1).map((project, i) => (
               <div
                 key={project.title}
-                className="group flex flex-col border border-slate-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                className="reveal"
+                style={{
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  transitionDelay: `${0.14 + i * 0.09}s`,
+                }}
               >
-                <div className="overflow-hidden h-48 bg-slate-100">
+                <div className="relative h-44 overflow-hidden">
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                   />
                 </div>
-                <div className="flex flex-col flex-1 p-6">
+                <div className="p-6">
                   <div className="flex flex-wrap gap-2 mb-3">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full font-medium"
+                        style={{
+                          fontFamily: "'JetBrains Mono', monospace",
+                          fontSize: "0.58rem",
+                          letterSpacing: "0.1em",
+                          textTransform: "uppercase",
+                          color: "var(--muted)",
+                          background: "var(--surface-2)",
+                          border: "1px solid var(--border)",
+                          padding: "2px 7px",
+                          borderRadius: 3,
+                        }}
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
-                  <h3 className="text-xl font-bold">{project.title}</h3>
-                  <p className="text-slate-500 mt-2 text-sm leading-6 flex-1">
+                  <h3
+                    style={{
+                      fontFamily: "'Barlow Condensed', sans-serif",
+                      fontWeight: 800,
+                      fontSize: "1.6rem",
+                      color: "var(--ink)",
+                      margin: "0 0 8px",
+                      letterSpacing: "-0.02em",
+                    }}
+                  >
+                    {project.title}
+                  </h3>
+                  <p style={{ color: "var(--muted)", fontSize: "0.82rem", lineHeight: 1.7, marginBottom: 16 }}>
                     {project.desc}
                   </p>
-                  <div className="flex gap-3 mt-5">
+                  <div className="flex gap-3">
                     <a
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-1.5 bg-blue-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors"
+                      className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md font-semibold transition-transform duration-150 hover:scale-[1.03]"
+                      style={{ background: "var(--primary)", color: "oklch(1 0 0)", fontSize: "0.72rem", textDecoration: "none" }}
                     >
-                      Live <ExternalLink size={13} />
+                      View <ExternalLink size={10} />
                     </a>
                     <a
                       href={project.github}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex-1 flex items-center justify-center gap-1.5 border border-slate-200 text-slate-600 py-2.5 rounded-xl text-sm font-semibold hover:border-blue-600 hover:text-blue-600 transition-colors"
+                      className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md font-semibold transition-colors duration-150"
+                      style={{ border: "1px solid var(--border)", color: "var(--muted)", fontSize: "0.72rem", textDecoration: "none" }}
                     >
-                      GitHub <Github size={13} />
+                      GitHub <Github size={10} />
                     </a>
                   </div>
                 </div>
@@ -307,111 +723,111 @@ export default function Portfolio() {
         </div>
       </section>
 
-      {/* ── CONTACT ── */}
-      <section id="contact" className="py-20 bg-slate-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <span className="text-blue-600 text-sm font-semibold uppercase tracking-widest">
-              Let's talk
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black mt-2">
-              Get In Touch
+      {/* ── CONTACT ──────────────────────────────────── */}
+      <section
+        id="contact"
+        className="relative z-10 px-6 md:px-14 py-20 md:py-28"
+        style={{ borderTop: "1px solid var(--border)" }}
+      >
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-14 md:gap-20">
+
+          {/* Left */}
+          <div>
+            <h2
+              className="reveal"
+              style={{
+                fontFamily: "'Barlow Condensed', sans-serif",
+                fontWeight: 800,
+                fontSize: "clamp(2.2rem, 5vw, 3.5rem)",
+                lineHeight: 0.92,
+                letterSpacing: "-0.025em",
+                color: "var(--ink)",
+                margin: "0 0 18px",
+              }}
+            >
+              Let's work<br />
+              <span style={{ color: "var(--primary)" }}>together</span>
             </h2>
+            <p
+              className="reveal"
+              style={{
+                transitionDelay: "0.08s",
+                color: "var(--muted)",
+                fontSize: "0.95rem",
+                lineHeight: 1.8,
+                margin: "0 0 28px",
+                maxWidth: "38ch",
+              }}
+            >
+              Available for frontend developer opportunities. Let's build
+              something clean, fast, and precise.
+            </p>
+
+            <div
+              className="reveal flex flex-col gap-4"
+              style={{ transitionDelay: "0.16s" }}
+            >
+              {[
+                { Icon: Mail,     label: "tsydyplundukov@gmail.com", href: "mailto:tsydyplundukov@gmail.com" },
+                { Icon: MapPin,   label: "New York, USA",             href: null },
+                { Icon: Github,   label: "GitHub",                    href: "https://github.com/lcipaa789-wq" },
+                { Icon: Linkedin, label: "LinkedIn",                  href: "https://www.linkedin.com/in/tsydyp-lundukov-a5507a3b5/" },
+              ].map(({ Icon, label, href }) =>
+                href ? (
+                  <a
+                    key={label}
+                    href={href}
+                    target={href.startsWith("http") ? "_blank" : undefined}
+                    rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    className="flex items-center gap-3 transition-colors duration-200 hover:text-white"
+                    style={{ color: "var(--muted)", textDecoration: "none", fontSize: "0.875rem" }}
+                  >
+                    <Icon size={15} className="shrink-0" style={{ color: "var(--primary)" }} />
+                    {label}
+                  </a>
+                ) : (
+                  <div key={label} className="flex items-center gap-3">
+                    <Icon size={15} className="shrink-0" style={{ color: "var(--primary)" }} />
+                    <span style={{ color: "var(--muted)", fontSize: "0.875rem" }}>{label}</span>
+                  </div>
+                )
+              )}
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-            {/* Info */}
-            <div className="space-y-8">
-              <p className="text-slate-600 text-lg leading-8">
-                I'm available for frontend developer opportunities. Let's build
-                something clean, modern, and useful together.
-              </p>
-
-              <div className="space-y-4">
-                {[
-                  {
-                    Icon: Mail,
-                    label: "tsydyplundukov@gmail.com",
-                    href: "mailto:tsydyplundukov@gmail.com",
-                  },
-                  { Icon: MapPin, label: "New York, USA", href: null },
-                  {
-                    Icon: Github,
-                    label: "GitHub",
-                    href: "https://github.com/lcipaa789-wq",
-                  },
-                  {
-                    Icon: Linkedin,
-                    label: "LinkedIn",
-                    href: "https://www.linkedin.com/in/tsydyp-lundukov-a5507a3b5/",
-                  },
-                ].map(({ Icon, label, href }) => {
-                  const content = (
-                    <>
-                      <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
-                        <Icon size={18} className="text-blue-600" />
-                      </div>
-                      <span className="text-slate-600">{label}</span>
-                    </>
-                  );
-                  return href ? (
-                    <a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-4 hover:text-blue-600 transition-colors group"
-                    >
-                      {content}
-                    </a>
-                  ) : (
-                    <div key={label} className="flex items-center gap-4">
-                      {content}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Form */}
-            <form ref={formRef} className="space-y-4" onSubmit={sendEmail}>
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                required
-                className="w-full bg-white border border-slate-200 rounded-xl px-5 py-4 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50 transition text-slate-800 placeholder:text-slate-400"
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                required
-                className="w-full bg-white border border-slate-200 rounded-xl px-5 py-4 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50 transition text-slate-800 placeholder:text-slate-400"
-              />
-              <textarea
-                name="message"
-                placeholder="Your Message"
-                rows="5"
-                required
-                className="w-full bg-white border border-slate-200 rounded-xl px-5 py-4 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50 transition resize-none text-slate-800 placeholder:text-slate-400"
-              />
+          {/* Right: form */}
+          <div className="reveal" style={{ transitionDelay: "0.12s" }}>
+            <form ref={formRef} className="flex flex-col gap-4" onSubmit={sendEmail}>
+              <input type="text"  name="name"    placeholder="Your Name"    required style={inputStyle} />
+              <input type="email" name="email"   placeholder="Your Email"   required style={inputStyle} />
+              <textarea           name="message" placeholder="Your Message" required rows={6} style={{ ...inputStyle, resize: "none" }} />
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 hover:bg-blue-700 transition-colors"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-semibold transition-transform duration-150 hover:scale-[1.02]"
+                style={{
+                  background: "var(--primary)",
+                  color: "oklch(1 0 0)",
+                  fontSize: "0.875rem",
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "'Manrope', sans-serif",
+                }}
               >
-                Send Message <Send size={18} />
+                Send Message
+                <Send size={14} />
               </button>
             </form>
           </div>
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
-      <footer className="py-8 bg-slate-900 text-center">
-        <p className="text-slate-400 text-sm">
-          © 2025 Tsydyp Lundukov — Built with React & Tailwind CSS
-        </p>
+      {/* ── FOOTER ───────────────────────────────────── */}
+      <footer
+        className="relative z-10 px-6 md:px-14 py-7 flex items-center justify-between"
+        style={{ borderTop: "1px solid var(--border)" }}
+      >
+        <MonoLabel>Tsydyp Lundukov · {new Date().getFullYear()}</MonoLabel>
+        <MonoLabel>Built with React & Tailwind</MonoLabel>
       </footer>
     </div>
   );

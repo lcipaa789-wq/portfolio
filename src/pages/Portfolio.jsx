@@ -23,35 +23,35 @@ import {
 import emailjs from "@emailjs/browser";
 import me from "../images/me.jpeg";
 import anime from "../images/anime.png";
-import miniShop from "../images/miniShop.png";
-import playHop from "../images/playHop.png";
+import miniShopNextJs from "../images/mini-shop-nextjs.png";
+import calorieTracker from "../images/calorie-tracker.png";
 import biteRush from "../images/biteRush.png";
 
 const stackGroups = [
   {
     label: "Frontend",
     items: [
-      { Icon: FaHtml5,      name: "HTML5" },
-      { Icon: FaCss3Alt,    name: "CSS3" },
+      { Icon: FaHtml5, name: "HTML5" },
+      { Icon: FaCss3Alt, name: "CSS3" },
       { Icon: SiJavascript, name: "JavaScript" },
-      { Icon: FaReact,      name: "React" },
+      { Icon: FaReact, name: "React" },
       { Icon: SiTailwindcss, name: "Tailwind CSS" },
-      { Icon: SiRedux,      name: "Redux" },
+      { Icon: SiRedux, name: "Redux" },
     ],
   },
   {
     label: "Backend",
     items: [
-      { Icon: SiNodedotjs,  name: "Node.js" },
-      { Icon: SiExpress,    name: "Express.js" },
-      { Icon: SiMongodb,    name: "MongoDB" },
+      { Icon: SiNodedotjs, name: "Node.js" },
+      { Icon: SiExpress, name: "Express.js" },
+      { Icon: SiMongodb, name: "MongoDB" },
     ],
   },
   {
     label: "Tooling",
     items: [
       { Icon: FaGitAlt, name: "Git" },
-      { Icon: Github,   name: "GitHub" },
+      { Icon: Github, name: "GitHub" },
       { Icon: SiVercel, name: "Vercel" },
     ],
   },
@@ -67,21 +67,22 @@ const projects = [
     tags: ["React", "Node.js", "MongoDB", "Stripe"],
     featured: true,
   },
+
   {
-    title: "Playhop",
-    desc: "Game platform built with React, Redux, RAWG API and Tailwind CSS.",
-    image: playHop,
-    link: "https://steam-clone-green.vercel.app/",
-    github: "https://github.com/lcipaa789-wq/steam-clone.git",
-    tags: ["React", "Redux", "RAWG API"],
+    title: "MiniShop Next.js",
+    desc: "E-commerce store built with Next.js — product catalog, cart, search, and server-side rendering.",
+    image: miniShopNextJs,
+    link: "https://mini-shop-flax.vercel.app/",
+    github: "https://github.com/lcipaa789-wq/MiniShop-React",
+    tags: ["Next.js", "React", "SSR"],
   },
   {
-    title: "MiniShop",
-    desc: "E-commerce app with cart, product cards, search and React Router.",
-    image: miniShop,
-    link: "https://mini-shop-react-jet.vercel.app/",
-    github: "https://github.com/lcipaa789-wq/MiniShop-React.git",
-    tags: ["React", "React Router"],
+    title: "Calorie Tracker",
+    desc: "Nutrition tracking app to log daily meals, count calories, and monitor macros with a clean dashboard.",
+    image: calorieTracker,
+    link: "https://calorie-tracker-inky-gamma.vercel.app/",
+    github: "https://github.com/lcipaa789-wq/calorie-tracker.git",
+    tags: ["React", "Vite", "Local Storage"],
   },
   {
     title: "Anime",
@@ -106,7 +107,7 @@ function useScrollReveal() {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
     document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
     return () => observer.disconnect();
@@ -115,15 +116,39 @@ function useScrollReveal() {
 
 function CornerMarks() {
   const corners = [
-    { top: 10, left: 10,   borderTop: "1px solid var(--primary)", borderLeft:  "1px solid var(--primary)" },
-    { top: 10, right: 10,  borderTop: "1px solid var(--primary)", borderRight: "1px solid var(--primary)" },
-    { bottom: 10, left: 10,  borderBottom: "1px solid var(--primary)", borderLeft:  "1px solid var(--primary)" },
-    { bottom: 10, right: 10, borderBottom: "1px solid var(--primary)", borderRight: "1px solid var(--primary)" },
+    {
+      top: 10,
+      left: 10,
+      borderTop: "1px solid var(--primary)",
+      borderLeft: "1px solid var(--primary)",
+    },
+    {
+      top: 10,
+      right: 10,
+      borderTop: "1px solid var(--primary)",
+      borderRight: "1px solid var(--primary)",
+    },
+    {
+      bottom: 10,
+      left: 10,
+      borderBottom: "1px solid var(--primary)",
+      borderLeft: "1px solid var(--primary)",
+    },
+    {
+      bottom: 10,
+      right: 10,
+      borderBottom: "1px solid var(--primary)",
+      borderRight: "1px solid var(--primary)",
+    },
   ];
   return (
     <>
       {corners.map((style, i) => (
-        <div key={i} className="absolute w-3.5 h-3.5 pointer-events-none" style={style} />
+        <div
+          key={i}
+          className="absolute w-3.5 h-3.5 pointer-events-none"
+          style={style}
+        />
       ))}
     </>
   );
@@ -156,11 +181,16 @@ export default function Portfolio() {
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         formRef.current,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
       )
       .then(
-        () => { alert("Message sent!"); formRef.current.reset(); },
-        () => { alert("Failed to send message."); }
+        () => {
+          alert("Message sent!");
+          formRef.current.reset();
+        },
+        () => {
+          alert("Failed to send message.");
+        },
       );
   };
 
@@ -180,13 +210,18 @@ export default function Portfolio() {
   return (
     <div
       className="dot-grid"
-      style={{ backgroundColor: "var(--bg)", color: "var(--ink)", minHeight: "100vh" }}
+      style={{
+        backgroundColor: "var(--bg)",
+        color: "var(--ink)",
+        minHeight: "100vh",
+      }}
     >
       {/* Ambient hero glow */}
       <div
         className="fixed inset-0 pointer-events-none"
         style={{
-          background: "radial-gradient(ellipse 55% 50% at 35% 40%, oklch(0.62 0.19 158 / 0.06) 0%, transparent 65%)",
+          background:
+            "radial-gradient(ellipse 55% 50% at 35% 40%, oklch(0.62 0.19 158 / 0.06) 0%, transparent 65%)",
           zIndex: 0,
         }}
       />
@@ -255,7 +290,12 @@ export default function Portfolio() {
           className="md:hidden p-1.5 -mr-1"
           onClick={() => setMenuOpen((v) => !v)}
           aria-label="Toggle menu"
-          style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted)" }}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "var(--muted)",
+          }}
         >
           {menuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
@@ -312,16 +352,20 @@ export default function Portfolio() {
         className="relative z-10 flex items-center min-h-screen pt-16 px-6 md:px-14 py-20 md:py-0"
       >
         <div className="w-full max-w-5xl mx-auto flex flex-col-reverse md:flex-row items-center justify-between gap-14 md:gap-8">
-
           {/* Left: typography */}
           <div className="flex-1">
             {/* Role */}
-            <div className="animate-fadeIn mb-7" style={{ animationDelay: "0.05s" }}>
+            <div
+              className="animate-fadeIn mb-7"
+              style={{ animationDelay: "0.05s" }}
+            >
               <MonoLabel>[ Frontend Developer ]</MonoLabel>
             </div>
 
             {/* Name */}
-            <h1 style={{ margin: 0, lineHeight: 0.88, letterSpacing: "-0.025em" }}>
+            <h1
+              style={{ margin: 0, lineHeight: 0.88, letterSpacing: "-0.025em" }}
+            >
               <div style={{ overflow: "hidden" }}>
                 <div
                   className="animate-slideUp"
@@ -357,7 +401,14 @@ export default function Portfolio() {
               className="animate-fadeIn flex items-center gap-4 mt-7 mb-7"
               style={{ animationDelay: "0.52s" }}
             >
-              <div style={{ width: 40, height: 1, background: "var(--primary)", flexShrink: 0 }} />
+              <div
+                style={{
+                  width: 40,
+                  height: 1,
+                  background: "var(--primary)",
+                  flexShrink: 0,
+                }}
+              />
               <span
                 style={{
                   fontFamily: "'JetBrains Mono', monospace",
@@ -422,7 +473,10 @@ export default function Portfolio() {
             </div>
 
             {/* Social */}
-            <div className="animate-fadeIn flex items-center gap-5 mt-10" style={{ animationDelay: "0.9s" }}>
+            <div
+              className="animate-fadeIn flex items-center gap-5 mt-10"
+              style={{ animationDelay: "0.9s" }}
+            >
               <a
                 href="https://github.com/lcipaa789-wq"
                 target="_blank"
@@ -463,7 +517,10 @@ export default function Portfolio() {
               />
               <div
                 className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none"
-                style={{ background: "linear-gradient(to top, var(--bg) 0%, transparent 100%)" }}
+                style={{
+                  background:
+                    "linear-gradient(to top, var(--bg) 0%, transparent 100%)",
+                }}
               />
               <CornerMarks />
             </div>
@@ -516,8 +573,17 @@ export default function Portfolio() {
                         borderRadius: 6,
                       }}
                     >
-                      <Icon size={17} style={{ color: "var(--primary)", flexShrink: 0 }} />
-                      <span style={{ fontSize: "0.875rem", color: "var(--ink)", fontWeight: 500 }}>
+                      <Icon
+                        size={17}
+                        style={{ color: "var(--primary)", flexShrink: 0 }}
+                      />
+                      <span
+                        style={{
+                          fontSize: "0.875rem",
+                          color: "var(--ink)",
+                          fontWeight: 500,
+                        }}
+                      >
                         {name}
                       </span>
                     </div>
@@ -621,7 +687,12 @@ export default function Portfolio() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg font-semibold transition-transform duration-150 hover:scale-[1.03]"
-                    style={{ background: "var(--primary)", color: "oklch(1 0 0)", fontSize: "0.78rem", textDecoration: "none" }}
+                    style={{
+                      background: "var(--primary)",
+                      color: "oklch(1 0 0)",
+                      fontSize: "0.78rem",
+                      textDecoration: "none",
+                    }}
                   >
                     View Project <ExternalLink size={12} />
                   </a>
@@ -630,7 +701,12 @@ export default function Portfolio() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg font-semibold transition-colors duration-150"
-                    style={{ border: "1px solid var(--border)", color: "var(--muted)", fontSize: "0.78rem", textDecoration: "none" }}
+                    style={{
+                      border: "1px solid var(--border)",
+                      color: "var(--muted)",
+                      fontSize: "0.78rem",
+                      textDecoration: "none",
+                    }}
                   >
                     GitHub <Github size={12} />
                   </a>
@@ -693,7 +769,14 @@ export default function Portfolio() {
                   >
                     {project.title}
                   </h3>
-                  <p style={{ color: "var(--muted)", fontSize: "0.82rem", lineHeight: 1.7, marginBottom: 16 }}>
+                  <p
+                    style={{
+                      color: "var(--muted)",
+                      fontSize: "0.82rem",
+                      lineHeight: 1.7,
+                      marginBottom: 16,
+                    }}
+                  >
                     {project.desc}
                   </p>
                   <div className="flex gap-3">
@@ -702,7 +785,12 @@ export default function Portfolio() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md font-semibold transition-transform duration-150 hover:scale-[1.03]"
-                      style={{ background: "var(--primary)", color: "oklch(1 0 0)", fontSize: "0.72rem", textDecoration: "none" }}
+                      style={{
+                        background: "var(--primary)",
+                        color: "oklch(1 0 0)",
+                        fontSize: "0.72rem",
+                        textDecoration: "none",
+                      }}
                     >
                       View <ExternalLink size={10} />
                     </a>
@@ -711,7 +799,12 @@ export default function Portfolio() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 px-3.5 py-2 rounded-md font-semibold transition-colors duration-150"
-                      style={{ border: "1px solid var(--border)", color: "var(--muted)", fontSize: "0.72rem", textDecoration: "none" }}
+                      style={{
+                        border: "1px solid var(--border)",
+                        color: "var(--muted)",
+                        fontSize: "0.72rem",
+                        textDecoration: "none",
+                      }}
                     >
                       GitHub <Github size={10} />
                     </a>
@@ -730,7 +823,6 @@ export default function Portfolio() {
         style={{ borderTop: "1px solid var(--border)" }}
       >
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-14 md:gap-20">
-
           {/* Left */}
           <div>
             <h2
@@ -745,7 +837,8 @@ export default function Portfolio() {
                 margin: "0 0 18px",
               }}
             >
-              Let's work<br />
+              Let's work
+              <br />
               <span style={{ color: "var(--primary)" }}>together</span>
             </h2>
             <p
@@ -768,39 +861,93 @@ export default function Portfolio() {
               style={{ transitionDelay: "0.16s" }}
             >
               {[
-                { Icon: Mail,     label: "tsydyplundukov@gmail.com", href: "mailto:tsydyplundukov@gmail.com" },
-                { Icon: MapPin,   label: "New York, USA",             href: null },
-                { Icon: Github,   label: "GitHub",                    href: "https://github.com/lcipaa789-wq" },
-                { Icon: Linkedin, label: "LinkedIn",                  href: "https://www.linkedin.com/in/tsydyp-lundukov-a5507a3b5/" },
+                {
+                  Icon: Mail,
+                  label: "tsydyplundukov@gmail.com",
+                  href: "mailto:tsydyplundukov@gmail.com",
+                },
+                { Icon: MapPin, label: "New York, USA", href: null },
+                {
+                  Icon: Github,
+                  label: "GitHub",
+                  href: "https://github.com/lcipaa789-wq",
+                },
+                {
+                  Icon: Linkedin,
+                  label: "LinkedIn",
+                  href: "https://www.linkedin.com/in/tsydyp-lundukov-a5507a3b5/",
+                },
               ].map(({ Icon, label, href }) =>
                 href ? (
                   <a
                     key={label}
                     href={href}
                     target={href.startsWith("http") ? "_blank" : undefined}
-                    rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
+                    rel={
+                      href.startsWith("http")
+                        ? "noopener noreferrer"
+                        : undefined
+                    }
                     className="flex items-center gap-3 transition-colors duration-200 hover:text-white"
-                    style={{ color: "var(--muted)", textDecoration: "none", fontSize: "0.875rem" }}
+                    style={{
+                      color: "var(--muted)",
+                      textDecoration: "none",
+                      fontSize: "0.875rem",
+                    }}
                   >
-                    <Icon size={15} className="shrink-0" style={{ color: "var(--primary)" }} />
+                    <Icon
+                      size={15}
+                      className="shrink-0"
+                      style={{ color: "var(--primary)" }}
+                    />
                     {label}
                   </a>
                 ) : (
                   <div key={label} className="flex items-center gap-3">
-                    <Icon size={15} className="shrink-0" style={{ color: "var(--primary)" }} />
-                    <span style={{ color: "var(--muted)", fontSize: "0.875rem" }}>{label}</span>
+                    <Icon
+                      size={15}
+                      className="shrink-0"
+                      style={{ color: "var(--primary)" }}
+                    />
+                    <span
+                      style={{ color: "var(--muted)", fontSize: "0.875rem" }}
+                    >
+                      {label}
+                    </span>
                   </div>
-                )
+                ),
               )}
             </div>
           </div>
 
           {/* Right: form */}
           <div className="reveal" style={{ transitionDelay: "0.12s" }}>
-            <form ref={formRef} className="flex flex-col gap-4" onSubmit={sendEmail}>
-              <input type="text"  name="name"    placeholder="Your Name"    required style={inputStyle} />
-              <input type="email" name="email"   placeholder="Your Email"   required style={inputStyle} />
-              <textarea           name="message" placeholder="Your Message" required rows={6} style={{ ...inputStyle, resize: "none" }} />
+            <form
+              ref={formRef}
+              className="flex flex-col gap-4"
+              onSubmit={sendEmail}
+            >
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                required
+                style={inputStyle}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                required
+                style={inputStyle}
+              />
+              <textarea
+                name="message"
+                placeholder="Your Message"
+                required
+                rows={6}
+                style={{ ...inputStyle, resize: "none" }}
+              />
               <button
                 type="submit"
                 className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg font-semibold transition-transform duration-150 hover:scale-[1.02]"
